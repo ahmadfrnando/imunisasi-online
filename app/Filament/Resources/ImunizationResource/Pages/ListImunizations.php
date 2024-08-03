@@ -13,7 +13,9 @@ class ListImunizations extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make()->hidden(fn () => auth()->user()->role=='petugas_pendaftaran'),
+            Actions\CreateAction::make()
+            ->label(__('Buat Vaksin Baru'))
+            ->icon('heroicon-c-plus-circle'),
         ];
     }
 }

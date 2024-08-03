@@ -12,5 +12,9 @@ class Immunization extends Model
 
     protected $fillable = [
         'nama_vaksin',
+        'usia_tepat_terpenuhi',
+        'usia_masih_dibolehkan',
+        'usia_pemberian_imunisasi_kejar',
+        'usia_tidak_dibolehkan',
     ];
 }

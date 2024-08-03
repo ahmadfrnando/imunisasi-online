@@ -20,11 +20,24 @@ class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-user-group';
+
+    protected static ?int $navigationSort = 5;
+
+    protected static ?string $navigationLabel = 'Petugas';
 
     public static function canViewAny(): bool
     {
-        return auth()->user()->role=='admin';
+        return auth()->user()->role=='Kepala Puskesmas';
+    }
+
+    public static function getPluralLabel(): ?string
+    {
+        $locale = app()->getLocale();
+        if ($locale == 'id') {
+            return "Daftar Pasien";
+        } else
+            return "Daftar Pasien";
     }
 
     public static function form(Form $form): Form
@@ -34,13 +47,6 @@ class UserResource extends Resource
                 TextInput::make('name')->label('Nama')->autocomplete(false),
                 TextInput::make('email')->autocomplete(false),
                 TextInput::make('password')->password()->revealable(),
-                Select::make('role')
-                ->options([
-                    'admin' => 'Administrator',
-                    'petugas_kesehatan' => 'Petugas Kesehatan',
-                    'petugas_pendaftaran' => 'Petugas Pendaftaran',
-                    'kepala_puskesmas' => 'Kepala Puskesmas',
-                ]),
             ]);
     }
 

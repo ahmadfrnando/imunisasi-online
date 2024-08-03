@@ -16,7 +16,6 @@ class StatsOverview extends BaseWidget
     {
             return [
                 Stat::make('Total Balita', Patient::count()),
-                Stat::make('Total Pemeriksaan', Measurement::count()),
                 Stat::make('Total Pemberian Imunisasi', ImmunizationRecord::count()),
                 Stat::make('Total Pengguna', User::count()),
                 Stat::make('Total Vaksin Tersedia', Immunization::count()),

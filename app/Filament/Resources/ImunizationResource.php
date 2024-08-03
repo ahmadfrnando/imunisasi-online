@@ -21,6 +21,8 @@ class ImunizationResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    protected static ?int $navigationSort = 3;
+
     protected static ?string $navigationLabel = 'Vaksin';
 
     public static function getPluralLabel(): ?string
@@ -37,6 +39,10 @@ class ImunizationResource extends Resource
         return $form
             ->schema([
                 TextInput::make('nama_vaksin')->autocomplete(false)->required(),
+                TextInput::make('usia_tepat_terpenuhi')->autocomplete(false)->suffix('Bulan'),
+                TextInput::make('usia_masih_dibolehkan')->autocomplete(false)->suffix('Bulan'),
+                TextInput::make('usia_pemberian_imunisasi_kejar')->autocomplete(false)->suffix('Bulan'),
+                TextInput::make('usia_tidak_dibolehkan')->autocomplete(false)->suffix('Bulan'),
             ]);
     }
 
@@ -45,19 +51,43 @@ class ImunizationResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('nama_vaksin')->searchable(),
+                TextColumn::make('usia_tepat_terpenuhi')
+                ->suffix(' Bulan')
+                ->badge()
+                ->color('success')
+                ->default('-')
+                ->searchable(),
+                TextColumn::make('usia_masih_dibolehkan')
+                ->suffix(' Bulan')
+                ->badge()
+                ->color('warning')
+                ->default('-')
+                ->searchable(),
+                TextColumn::make('usia_pemberian_imunisasi_kejar')
+                ->suffix(' Bulan')
+                ->badge()
+                ->color('danger')
+                ->default('-')
+                ->searchable(),
+                TextColumn::make('usia_tidak_dibolehkan')
+                ->suffix(' Bulan')
+                ->badge()
+                ->color('gray')
+                ->default('-')
+                ->searchable(),
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\ViewAction::make('view')->hidden(fn () => auth()->user()->role=='petugas_pendaftaran'),
-                Tables\Actions\EditAction::make()->hidden(fn () => auth()->user()->role=='petugas_pendaftaran'),
+                Tables\Actions\ViewAction::make('view'),
+                Tables\Actions\EditAction::make(),
                 Tables\Actions\Action::make('delete')
                 ->icon('heroicon-o-trash')
                 ->color('danger')
                 ->action(fn (Immunization $record) => $record->delete())
                 ->requiresConfirmation()
-                ->hidden(fn () => auth()->user()->role=='petugas_pendaftaran')
+                
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

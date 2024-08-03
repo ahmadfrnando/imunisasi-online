@@ -15,7 +15,10 @@ return new class extends Migration
             $table->id('record_id');
             $table->foreignId('patient_id')->constrained('patients', 'patient_id')->onDelete('cascade');
             $table->foreignId('immunization_id')->constrained('immunizations', 'immunization_id')->onDelete('cascade');
-            $table->date('tanggal_pemberian');
+            $table->string('usia_saat_pemberian');
+            $table->float('berat_badan');
+            $table->float('tinggi_badan');
+            $table->float('lingkar_kepala');
             $table->foreignId('petugas_id')->constrained('users', 'id')->onDelete('cascade');
             $table->timestamps();
         });

@@ -103,7 +103,13 @@
         <div class="header-content">
             <h1>Puskesmas Pembantu Sumber Mulyorejo Binjai</h1>
             <h2>Laporan Data Imunisasi</h2>
-            <p>Periode: Januari - Desember 2024</p>
+            <p>Periode:
+                @if ($bulan_awal == null || $bulan_awal == 0)
+                    {{ now()->year }}
+                @else
+                {{ Carbon\Carbon::create()->month(intval($bulan_awal))->translatedFormat('F') . ' - ' . Carbon\Carbon::create()->month(intval($bulan_akhir))->translatedFormat('F') }}
+                @endif
+            </p>
         </div>
     </header>
 

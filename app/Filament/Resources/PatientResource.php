@@ -8,6 +8,7 @@ use App\Models\Patient;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
+use Filament\Tables\Filters\Filter;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Tables\Columns\IconColumn;
@@ -24,14 +25,10 @@ class PatientResource extends Resource
 {
     protected static ?string $model = Patient::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-user-plus';
+    protected static ?int $navigationSort = 2;
 
-    protected static ?string $navigationLabel = 'Pendaftaran Pasien';
-
-    public static function canViewAny(): bool
-    {
-        return auth()->user()->role=='petugas_pendaftaran'||auth()->user()->role=='admin';
-    }
+    protected static ?string $navigationLabel = 'Pasien';
 
     public static function getPluralLabel(): ?string
     {
@@ -59,7 +56,6 @@ class PatientResource extends Resource
                 Textarea::make('alamat')->required()->autocomplete(false),
                 TextInput::make('nama_wali')->required()->autocomplete(false),
                 TextInput::make('telepon_wali')->required()->numeric(),
-                TextInput::make('email_wali')->required()->autocomplete(false)->email(),
             ]);
     }
 
@@ -67,23 +63,46 @@ class PatientResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('nama_balita')->searchable()->searchable(),
+                TextColumn::make('nama_balita')->label("hendra")->searchable()->searchable(),
                 TextColumn::make('tanggal_lahir')->date(),
                 TextColumn::make('jenis_kelamin')->searchable(),
                 TextColumn::make('alamat')->limit(20)->searchable(),
                 TextColumn::make('nama_wali')->searchable(),
-            ])
+                TextColumn::make('created_at')->label('Daftar Pada')->date(),
+            ])->defaultSort('created_at', 'desc')
             ->filters([
-                //
+                Filter::make('created_at')
+                    ->form([
+                        DatePicker::make('created_from')->label('Tanggal Mulai'),
+                        DatePicker::make('created_until')->label('Tanggal Akhir')->default(now()),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['created_from'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                            )
+                            ->when(
+                                $data['created_until'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+                            );
+                    })
             ])
             ->actions([
                 Tables\Actions\ViewAction::make('view'),
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()->color('third'),
                 Tables\Actions\Action::make('delete')
                 ->icon('heroicon-o-trash')
                 ->color('danger')
                 ->action(fn (Patient $record) => $record->delete())
-                ->requiresConfirmation()
+                ->requiresConfirmation(),
+                Tables\Actions\Action::make('Laporan')
+                    ->icon('heroicon-s-printer')
+                    ->color('success')
+                    ->url(
+                        fn (Patient $record): string => route('laporan.perbalita', ['patient_id' => $record->patient_id]),
+                        shouldOpenInNewTab: true
+                    )
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

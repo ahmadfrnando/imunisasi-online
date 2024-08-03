@@ -19,7 +19,6 @@ return new class extends Migration
             $table->string('alamat');
             $table->string('nama_wali');
             $table->string('telepon_wali');
-            $table->string('email_wali');
             $table->float('tinggi_badan_lahir');
             $table->float('berat_badan_lahir');
             $table->float('lingkar_kepala');

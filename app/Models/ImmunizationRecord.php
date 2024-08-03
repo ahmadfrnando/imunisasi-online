@@ -14,7 +14,7 @@ class ImmunizationRecord extends Model
     protected $primaryKey = 'record_id';
 
     protected $fillable = [
-        'patient_id', 'immunization_id', 'tanggal_pemberian', 'petugas_id',
+        'patient_id', 'immunization_id', 'usia_saat_pemberian' , 'tinggi_badan', 'berat_badan', 'lingkar_kepala', 'petugas_id'
     ];
 
     public function patient()
